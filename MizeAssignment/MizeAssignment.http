@@ -1,0 +1,6 @@
+@MizeAssignment_HostAddress = http://localhost:5204
+
+GET {{MizeAssignment_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

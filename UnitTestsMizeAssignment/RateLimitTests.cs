@@ -26,19 +26,15 @@ public class RateLimitTests
     {
         // Arrange
         var rateLimit = new RateLimit(1, TimeSpan.FromMilliseconds(500));
-        await rateLimit.EnforceLimitAsync(); // First request
+        await rateLimit.EnforceLimitAsync();
 
         var startTime = DateTime.UtcNow;
 
         // Act
-        await rateLimit.EnforceLimitAsync(); // Second request should wait
-
+        await rateLimit.EnforceLimitAsync();
         var elapsed = DateTime.UtcNow - startTime;
 
         // Assert
         Assert.True(elapsed >= TimeSpan.FromMilliseconds(500), "EnforceLimitAsync should wait for at least the time window.");
     }
-
-
-
 }

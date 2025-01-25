@@ -54,7 +54,6 @@ public class RateLimiterTests
         var rateLimitMock1 = new Mock<IRateLimit>();
         var rateLimitMock2 = new Mock<IRateLimit>();
 
-        // Setup to track execution order
         var executionOrder = new List<string>();
 
         rateLimitMock1
@@ -103,8 +102,6 @@ public class RateLimiterTests
 
         // Act & Assert
         await Assert.ThrowsAsync<InvalidOperationException>(() => rateLimiter.PerformAsync("Test"));
-
-        // Ensure action was not executed
         Assert.False(actionExecuted, "Action should not be executed if rate limit fails.");
     }
 

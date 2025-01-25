@@ -21,8 +21,6 @@ public class RateLimit : IRateLimit
             DateTime now = DateTime.UtcNow;
             CleanupOldTimestamps(now);
             var count = _requestTimestamps.Count;
-            Console.WriteLine($"Current requests in window: {count}, " +
-                            $"Max allowed: {_maxRequests}, Should wait: {count >= _maxRequests}");
 
             return count >= _maxRequests;
     }
@@ -48,16 +46,13 @@ public class RateLimit : IRateLimit
 
                         if (delay > TimeSpan.Zero)
                         {
-                            Console.WriteLine($"Rate limit reached! Maximum of {_maxRequests} requests allowed per {_timeWindow.TotalMinutes} minute(s).");
-                            Console.WriteLine($"Need to wait for {delay.TotalSeconds:F1} seconds before next request can be processed");
+                            Console.WriteLine($"Rate limit reached, Maximum of {_maxRequests} requests allowed per {_timeWindow.TotalMinutes} minute(s).");
                             await Task.Delay(delay);
 
-                            // After waiting, cleanup again and recheck count
                             now = DateTime.UtcNow;
                             CleanupOldTimestamps(now);
                             currentCount = _requestTimestamps.Count;
 
-                            // If we're still at limit after waiting and cleanup, we shouldn't proceed
                             if (currentCount >= _maxRequests)
                             {
                                 throw new InvalidOperationException($"Rate limit still exceeded after waiting. Try again later.");
@@ -66,9 +61,7 @@ public class RateLimit : IRateLimit
                     }
                 }
 
-                // Only add the timestamp if we're under the limit
                 _requestTimestamps.Enqueue(now);
-                Console.WriteLine($"Added new timestamp, count is now: {_requestTimestamps.Count}");
             }
             finally
             {
@@ -86,7 +79,6 @@ public class RateLimit : IRateLimit
             _requestTimestamps.TryDequeue(out _);
             removedCount++;
         }
-
         if (removedCount > 0)
         {
             Console.WriteLine($"Cleaned up {removedCount} old timestamps");

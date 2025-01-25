@@ -13,15 +13,11 @@ public class RateLimiter<T> : IRateLimiter<T>
 
     public async Task PerformAsync(T argument)
     {
-        IEnumerable<IRateLimit> limitsToWait = _rateLimits.Where(rl => rl.ShouldWait());
-        // Check if any rate limit requires waiting before proceeding
-        if (limitsToWait.Any())
+        foreach (var rateLimit in _rateLimits)
         {
-            var waitingTasks = limitsToWait.Select(rl => rl.EnforceLimitAsync());
-            await Task.WhenAll(waitingTasks);
+            await rateLimit.EnforceLimitAsync();
         }
 
-        // Perform the main action after all rate limits are satisfied
         await _actionToPerform(argument);
     }
 }

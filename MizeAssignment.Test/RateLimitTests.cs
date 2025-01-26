@@ -1,10 +1,4 @@
 ﻿using MizeAssignment.Services;
-using System;
-using System.Collections.Concurrent;
-using System.Reflection;
-using System.Security.Cryptography;
-using System.Threading.Tasks;
-using Xunit;
 
 public class RateLimitTests
 {
